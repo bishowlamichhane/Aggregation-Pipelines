@@ -1,0 +1,47 @@
+"Exploring Aggregation Pipelines in MongoDB with Subscription and User Profiles"
+
+
+-> In this article, we explore how MongoDB's aggregation framework helps efficiently manage data in a video streaming project, focusing on subscriptions and user profiles. Aggregation pipelines allow us to perform complex data transformations directly within MongoDB, reducing the need for additional logic in the application code.
+
+-> Key Aggregation Stages Used
+$match: Filters documents based on specific criteria, like finding users by their username.
+
+
+//
+{ $match: { username: username.toLowerCase() } }
+$lookup: Joins collections (e.g., subscriptions and users) to get relevant data, such as subscribers and channels subscribed to.
+
+//
+{ 
+  $lookup: { 
+    from: "subscriptions", 
+    localField: "_id", 
+    foreignField: "channel", 
+    as: "subscribers" 
+  }
+}
+$addFields: Adds computed fields, like the number of subscribers and whether a user is subscribed to a channel.
+
+//
+{ 
+  $addFields: { 
+    subscribersCount: { $size: "$subscribers" }, 
+    isSubscribed: { $cond: { if: { $in: [userId, "$subscribers.subscriber"] }, then: true, else: false } }
+  }
+}
+$project: Reshapes documents by selecting specific fields, helping optimize the data sent to the front-end.
+
+//
+{ $project: { username: 1, subscribersCount: 1, avatar: 1 } }
+Mini-Projects Using Aggregation Pipelines
+Counting Subscribers: We used $lookup and $size to count the number of subscribers for a channel, improving efficiency over traditional methods.
+
+1.Top Subscribed Channels: By combining $lookup, $addFields, and $sort, we fetched the top 5 most subscribed channels based on the subscriber count.
+
+2.Mutual Subscriptions: We used $lookup for both subscribers and subscriptions, and $setIntersection to identify mutual subscriptions between users.
+
+3.Subscriber Growth: We tracked subscriber growth over time using $group to aggregate subscriptions by date, showing how subscribers increase on a daily basis.
+
+4.Common Subscriptions: With $match and $group, we identified channels subscribed to by multiple users, helping understand group interests.
+
+-> This article briefly covers how aggregation pipelines are crucial for handling complex data relationships in MongoDB. Each mini-project demonstrates practical use cases of MongoDB aggregation, enabling us to optimize and simplify our backend logic while efficiently managing subscriptions and user data.
