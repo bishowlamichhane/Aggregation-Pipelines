@@ -1,8 +1,8 @@
 import express from 'express'
 import { getTopChannels } from '../controllers/Top_Subscribed_Channels.js'
-import { getMutualSubscribers } from '../controllers/mutual_subscribers.js'
-import { getCommonSubscriptions } from '../controllers/commonSubscriptions.js'
-import { getSubscriberGrowth } from '../controllers/subscriberGrowth.js'
+import { getMutualSubscribers } from '../controllers/2_mutual_subscribers.js'
+import { getCommonSubscriptions } from '../controllers/4_commonSubscriptions.js'
+import { getSubscriberGrowth } from '../controllers/3_subscriberGrowth.js'
 
 const router=express.Router()
 
