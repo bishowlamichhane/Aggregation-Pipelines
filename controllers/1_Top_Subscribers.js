@@ -1,3 +1,5 @@
+import { User } from "../models/users.models.js";
+
 const getTopChannels = asyncHandler ( async (req,res)=>{
     
     const topChannels = await User.aggregate([

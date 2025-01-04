@@ -1,3 +1,5 @@
+import { Subscription } from "../models/Subscription.model.js";
+
 const getSubscriberGrowth = asyncHandler(async (req,res)=>{
 
     const subscriberGrowth = await Subscription.aggregate([

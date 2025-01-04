@@ -1,3 +1,5 @@
+import { Subscription } from "../models/Subscription.model.js";
+
 const getCommonSubscriptions = asyncHandler( async (req,res)=>{
 
     const commonSubscriptions = await Subscription.aggregate([

@@ -1,3 +1,5 @@
+import { User } from "../models/users.models.js";
+
 const getMutualSubscribers= asyncHandler(async (req,res)=>{
 
     const mutualSubscriptions = await User.aggregate([
