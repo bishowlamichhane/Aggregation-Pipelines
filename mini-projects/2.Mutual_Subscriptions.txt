@@ -1,0 +1,51 @@
+2. Mutual Subscriptions
+
+Description: This project identifies users who are mutually subscribed to each other. It uses MongoDB's $lookup to join the subscriptions collection twice and $setIntersection to find mutual subscriptions. How it was made:
+
+We performed two $lookup operations to fetch subscribers and subscribedTo lists for each user.
+$setIntersection was used to find mutual users who appear in both the subscribers and subscribedTo lists.
+Finally, the results were filtered with $match to show only users with mutual subscriptions.
+
+
+---> controller Code 
+          const mutualSubscriptions = await User.aggregate([
+        {
+          $lookup: {
+            from: 'subscriptions',
+            localField: '_id',
+            foreignField: 'channel',
+            as: 'subscribers'
+          }
+        },
+        {
+          $lookup: {
+            from: 'subscriptions',
+            localField: '_id',
+            foreignField: 'subscriber',
+            as: 'subscribedTo'
+          }
+        },
+        {
+          $addFields: {
+            mutual: {
+              $setIntersection: ['$subscribers.subscriber', '$subscribedTo.channel']
+            }
+          }
+        },
+        {
+          $match: { mutual: { $ne: [] } }
+        }
+      ]);
+      
+      console.log(mutualSubscriptions);
+      
+
+/*
+Explanation:
+
+$lookup: Joins the subscriptions collection to get the list of users who are subscribed and the list of channels each user is subscribed to.
+
+$setIntersection: Finds the intersection between the subscribers and subscribedTo arrays to determine mutual subscriptions.
+
+$match: Filters the results to include only users with non-empty mutual subscriptions.
+*/

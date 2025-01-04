@@ -1,0 +1,47 @@
+4. Channels Subscribed to by a Group of Users
+
+Description: This project finds common channels subscribed to by a specific group of users. It aggregates subscription data to identify channels subscribed to by multiple users. How it was made:
+
+We used $match to filter subscriptions for a list of specific users.
+$group was used to group the subscriptions by channel and count how many users subscribed to each one.
+$match was then used to filter out channels subscribed to by fewer than 2 users.
+
+
+
+
+---> controller Code
+
+    const commonSubscriptions = await Subscription.aggregate([
+        {
+          $match: { subscriber: { $in: [userId1, userId2, userId3] } }  // Match subscriptions for specific users
+        },
+        {
+          $group: {
+            _id: "$channel",  // Group by channel
+            count: { $sum: 1 }  // Count how many users subscribed to each channel
+          }
+        },
+        {
+          $match: { count: { $gte: 2 } }  // Filter channels subscribed to by at least 2 users
+        }
+      ]);
+      
+      console.log(commonSubscriptions);
+      
+
+
+
+
+
+
+/*
+
+Explanation:
+
+$match: Filters subscriptions to include only those where the subscriber is one of the users in the provided list.
+
+$group: Groups the subscriptions by channel and counts how many users subscribed to each channel.
+
+$match: Filters to show only channels subscribed to by at least 2 users.
+
+*/

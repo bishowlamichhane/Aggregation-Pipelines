@@ -1,0 +1,57 @@
+1. Top Subscribed Channels
+
+
+Description: This mini-project retrieves the top 5 channels with the most subscribers from the database. It uses MongoDB aggregation pipelines to count the number of subscribers per channel and sorts them in descending order to find the top channels. How it was made:
+
+We used the $lookup stage to join the users collection with the subscriptions collection.
+$addFields was used to calculate the number of subscribers using the $size operator.
+The results were sorted by subscriber count using $sort, and limited to the top 5 with $limit.
+
+
+--->controller Code
+
+
+    const topChannels = await User.aggregate([
+        {
+          $lookup: {
+            from: 'subscriptions',
+            localField: '_id',
+            foreignField: 'channel',
+            as: 'subscribers'
+          }
+        },
+        {
+          $addFields: {
+            subscribersCount: { $size: '$subscribers' }
+          }
+        },
+        {
+          $sort: { subscribersCount: -1 }
+        },
+        {
+          $limit: 5
+        },
+        {
+          $project: {
+            username: 1,
+            subscribersCount: 1,
+            avatar: 1
+          }
+        }
+      ]);
+      
+      console.log(topChannels)
+
+/*
+
+Explanation:
+
+$lookup: Joins the subscriptions collection to get the subscribers array for each user (channel).
+
+$addFields: Adds a new field subscribersCount to store the size of the subscribers array.
+
+$sort: Sorts by subscribersCount in descending order.
+
+$limit: Limits the result to the top 5 channels.
+
+*/
